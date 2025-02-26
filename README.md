@@ -8,7 +8,7 @@ The script is able to:
 ![player](screenshots/player.png)
 
 # Installation
-Copy the bash script to your usual polybar scripts location, and set it up in your Polybar configuration.
+Copy the bash script to your usual polybar scripts location, and set it up in your Polybar configuration.\
 The script uses `playerctl`, [Font Awesome](https://fontawesome.com/), and, obviously, [Tauon Music Box](https://tauonmusicbox.rocks/).
 
 # Polybar module setup
@@ -22,3 +22,7 @@ click-left = <path_to_script> previous
 click-middle = <path_to_script> playpause
 click-right = <path_to_script> next
 ```
+
+# Divider
+By default the divider between the artist and the song is `-`, however it can be changed by using the `-d` flag.\
+`<path_to_script> -d "//" ACTION`

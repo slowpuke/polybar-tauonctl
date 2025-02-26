@@ -3,18 +3,30 @@
 player=$(playerctl -p tauon status 2> /dev/null)
 PLAYING=$'\uf04b'
 STOPPED=$'\uf04c'
+divider="-"
 
-function display() {
+while getopts "d:" OPTION; do
+    case "$OPTION" in
+        d)
+            divider=${OPTARG}
+            ;;
+        *)
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+display() {
     if [ "$player" = "Paused" ]; then
-        echo "$STOPPED $(playerctl -p tauon metadata artist) // $(playerctl -p tauon metadata title)"
+        echo "$STOPPED $(playerctl -p tauon metadata artist) $divider $(playerctl -p tauon metadata title)"
     elif [ "$player" = "Playing" ]; then
-        echo "$PLAYING $(playerctl -p tauon metadata artist) // $(playerctl -p tauon metadata title)"
+        echo "$PLAYING $(playerctl -p tauon metadata artist) $divider $(playerctl -p tauon metadata title)"
     else
         echo ""
     fi
 }
 
-function play_pause_toggle() {
+play_pause_toggle() {
     if [ "$player" = "Paused" ]; then
         playerctl -p tauon play
     elif [ "$player" = "Playing" ]; then
@@ -22,7 +34,7 @@ function play_pause_toggle() {
     fi
 }
 
-function song_change() {
+song_change() {
     if [ "$1" = "next" ]; then
         playerctl -p tauon next
     elif [ "$1" = "previous" ]; then
@@ -30,9 +42,12 @@ function song_change() {
     fi
 }
 
-function help() {
+help() {
     echo "\
-Usage: $0 ACTION
+Usage: $0 [ARG] [ACTION]
+
+Arguments:
+    -d              sets a default divider between artist and song. By default it's \"-\"
 
 Action:
     display         displays the currently playing/paused song
@@ -62,7 +77,7 @@ case "$1" in
         ;;
     help)
         help
-        ;;
+       ;;
     "")
         echo "No action was specified, for a list of all actions run \`$0 help\`."
         ;;

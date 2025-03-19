@@ -4,11 +4,15 @@ player=$(playerctl -p tauon status 2> /dev/null)
 PLAYING=$'\uf04b'
 STOPPED=$'\uf04c'
 divider="-"
+max_char=80
 
-while getopts "d:" OPTION; do
+while getopts "d:c:" OPTION; do
     case "$OPTION" in
         d)
             divider=${OPTARG}
+            ;;
+        c)
+            max_char=${OPTARG}
             ;;
         *)
             ;;
@@ -17,10 +21,19 @@ done
 shift $((OPTIND-1))
 
 display() {
+    artist_title="$(playerctl -p tauon metadata artist 2> /dev/null) $divider $(playerctl -p tauon metadata title 2> /dev/null)"
     if [ "$player" = "Paused" ]; then
-        echo "$STOPPED $(playerctl -p tauon metadata artist) $divider $(playerctl -p tauon metadata title)"
+        if [ "${#artist_title}" -gt 81 ]; then
+            echo "$STOPPED" "$(echo "$artist_title" | head -c "$max_char")" "..."
+        else
+            echo "$STOPPED $artist_title"
+        fi
     elif [ "$player" = "Playing" ]; then
-        echo "$PLAYING $(playerctl -p tauon metadata artist) $divider $(playerctl -p tauon metadata title)"
+        if [ "${#artist_title}" -gt 81 ]; then
+            echo "$PLAYING" "$(echo "$artist_title" | head -c "$max_char")" "..."
+        else
+            echo "$PLAYING $artist_title"
+        fi
     else
         echo ""
     fi
@@ -48,6 +61,7 @@ Usage: $0 [ARG] [ACTION]
 
 Arguments:
     -d              sets a default divider between artist and song. By default it's \"-\"
+    -c              sets a maximum amount of character displayed for the artist and song. By default set to 80
 
 Action:
     display         displays the currently playing/paused song
@@ -59,7 +73,7 @@ Action:
 Author:
     slowpuke
 GitHub:
-    https://github.com/slowpuke/tauon-playerctl"
+    https://github.com/slowpuke/polybar-tauonctl"
 }
 
 case "$1" in

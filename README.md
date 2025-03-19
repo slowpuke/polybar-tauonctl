@@ -26,3 +26,6 @@ click-right = <path_to_script> next
 # Divider
 By default the divider between the artist and the song is `-`, however it can be changed by using the `-d` flag.\
 `<path_to_script> -d "//" ACTION`
+
+# Max characters
+By default the script will display 80 characters at max, this can be changed with the `-c` flag

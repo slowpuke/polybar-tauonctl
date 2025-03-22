@@ -23,13 +23,13 @@ shift $((OPTIND-1))
 display() {
     artist_title="$(playerctl -p tauon metadata artist 2> /dev/null) $divider $(playerctl -p tauon metadata title 2> /dev/null)"
     if [ "$player" = "Paused" ]; then
-        if [ "${#artist_title}" -gt 81 ]; then
+        if [ "${#artist_title}" -gt "$max_char" ]; then
             echo "$STOPPED" "$(echo "$artist_title" | head -c "$max_char")" "..."
         else
             echo "$STOPPED $artist_title"
         fi
     elif [ "$player" = "Playing" ]; then
-        if [ "${#artist_title}" -gt 81 ]; then
+        if [ "${#artist_title}" -gt "$max_char" ]; then
             echo "$PLAYING" "$(echo "$artist_title" | head -c "$max_char")" "..."
         else
             echo "$PLAYING $artist_title"
@@ -55,6 +55,14 @@ song_change() {
     fi
 }
 
+volume_change() {
+    if [ "$1" = "up" ]; then
+        playerctl -p tauon volume 0.05+
+    elif [ "$1" = "down" ]; then
+        playerctl -p tauon volume 0.05-
+    fi
+}
+
 help() {
     echo "\
 Usage: $0 [ARG] [ACTION]
@@ -68,6 +76,8 @@ Action:
     playpause       pauses/unpauses the song
     next            plays the next song
     previous        plays the previous song
+    volumeup        raises the volume by 0.05 ranging from 0 to 1
+    volumedown      lowers the volume by 0.05 ranging from 0 to 1
     help            displays all the possible actions
 
 Author:
@@ -88,6 +98,12 @@ case "$1" in
         ;;
     previous)
         song_change previous
+        ;;
+    volumeup)
+        volume_change up
+        ;;
+    volumedown)
+        volume_change down
         ;;
     help)
         help

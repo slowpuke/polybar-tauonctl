@@ -21,6 +21,8 @@ interval = 1
 click-left = <path_to_script> previous
 click-middle = <path_to_script> playpause
 click-right = <path_to_script> next
+scroll-up = <path_to_script> volumeup
+scroll-down = <path_to_script> volumedown
 ```
 
 # Divider
